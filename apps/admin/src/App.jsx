@@ -320,7 +320,11 @@ export default function App() {
   const [dirty, setDirty] = useState(false);
   const [error, setError] = useState(null);
   const toast = useToast();
-  const handleNodesChange = useCallback(() => setDirty(true), [setDirty]);
+  const dirtyTimer = useRef(null);
+  const handleNodesChange = useCallback(() => {
+    if (dirtyTimer.current) clearTimeout(dirtyTimer.current);
+    dirtyTimer.current = setTimeout(() => setDirty(true), 500);
+  }, [setDirty]);
 
   useEffect(() => {
     loadDraft()
