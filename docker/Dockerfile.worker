@@ -1,0 +1,6 @@
+FROM node:22-alpine
+WORKDIR /app
+COPY services/worker services/worker
+WORKDIR /app/services/worker
+RUN npm install --omit=dev 2>/dev/null || true
+CMD ["node", "src/index.js"]

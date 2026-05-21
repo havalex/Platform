@@ -1,0 +1,13 @@
+{
+  "name": "@forge/worker",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch src/index.js",
+    "start": "node src/index.js"
+  },
+  "dependencies": {
+    "ioredis": "^5.4.0"
+  }
+}

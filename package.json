@@ -1,0 +1,25 @@
+{
+  "name": "forge-platform",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Multi-tenant UI platform — Craft.js admin, manifest runtime, module system",
+  "type": "module",
+  "scripts": {
+    "dev": "pnpm -r --parallel run dev",
+    "dev:all": "pnpm db:migrate && concurrently -n api,admin,runtime -c blue,magenta,green \"pnpm dev:api\" \"pnpm dev:admin\" \"pnpm dev:runtime\"",
+    "dev:api": "pnpm --filter @forge/api dev",
+    "dev:admin": "pnpm --filter @forge/admin dev",
+    "dev:runtime": "pnpm --filter @forge/runtime dev",
+    "build": "pnpm -r run build",
+    "db:migrate": "pnpm --filter @forge/api db:migrate",
+    "infra:up": "docker compose -f docker/docker-compose.yml up -d postgres",
+    "infra:down": "docker compose -f docker/docker-compose.yml down"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "pnpm@9.15.0"
+}

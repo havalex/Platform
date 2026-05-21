@@ -1,0 +1,9 @@
+:80 {
+  handle /api/* {
+    reverse_proxy api:4000
+  }
+  handle /health {
+    reverse_proxy api:4000
+  }
+  respond "Forge Platform — run admin (5173) and runtime (5174) via pnpm dev, or add static builds here." 200
+}

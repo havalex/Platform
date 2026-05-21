@@ -1,0 +1,8 @@
+{
+  "id": "core-shell",
+  "name": "Core Shell",
+  "version": "1.0.0",
+  "requires": { "platform": "^0.1.0" },
+  "permissions": ["shell"],
+  "components": []
+}

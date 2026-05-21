@@ -1,0 +1,11 @@
+{
+  "manifest": {
+    "id": "hello-block",
+    "name": "Hello Block",
+    "version": "1.0.0",
+    "requires": { "platform": "^0.1.0" },
+    "permissions": ["components"],
+    "components": ["HelloBox"]
+  },
+  "bundle": "export function register(api) {\n  const { React } = api;\n  function HelloBox({ message = 'Hello from module!' }) {\n    return React.createElement('div', {\n      style: { padding: 16, background: '#fef3c7', borderRadius: 8, fontWeight: 600 }\n    }, message);\n  }\n  api.registerComponents({ HelloBox });\n}\nexport default { register };"
+}
