@@ -344,9 +344,11 @@ cd .. && pnpm db:migrate && pnpm dev:api`}
     return <div style={{ padding: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>Loading Forge Admin…</div>;
   }
 
+const handleNodesChange = useCallback(() => setDirty(true), [setDirty]);
+
   return (
     <>
-      <Editor resolver={resolver} enabled onNodesChange={() => setDirty(true)}>
+      <Editor resolver={resolver} enabled onNodesChange={handleNodesChange}>
         <AdminEditor
           manifest={manifest}
           setManifest={setManifest}
