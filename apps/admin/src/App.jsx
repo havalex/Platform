@@ -245,7 +245,7 @@ function AdminEditor({
 }) {
   const { query } = useEditor();
   const page = manifest.pages[pageIndex];
-  const canvasKey = `${pageIndex}-${page?.route}-${revision}`;
+  const canvasKey = `${pageIndex}-${page?.route}`;
 
   const syncFromCanvas = useCallback(() => {
     return syncManifestPage(manifest, pageIndex, query.serialize());
