@@ -1,5 +1,5 @@
 import React, { useReducer, useEffect } from 'react';
-import { createSignalReducer, getCoreRegistry } from './registry.jsx';
+import { createSignalReducer, getCoreRegistry, CORE_REGISTRY } from './registry.jsx';
 import { resolveShell } from './shells.jsx';
 
 export { CORE_REGISTRY, getCoreRegistry, createSignalReducer } from './registry.jsx';
