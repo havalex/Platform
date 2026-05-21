@@ -218,6 +218,6 @@ try {
   console.warn('⚠️  Bootstrap skipped (DB not ready?):', e.message);
 }
 
-serve({ fetch: app.fetch, port }, () => {
-  console.log(`🔥 Forge API http://localhost:${port}`);
+serve({ fetch: app.fetch, port, host: '0.0.0.0' }, () => {
+  console.log(`🔥 Forge API http://0.0.0.0:${port}`);
 });
