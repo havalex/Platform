@@ -320,6 +320,7 @@ export default function App() {
   const [dirty, setDirty] = useState(false);
   const [error, setError] = useState(null);
   const toast = useToast();
+  const handleNodesChange = useCallback(() => setDirty(true), [setDirty]);
 
   useEffect(() => {
     loadDraft()
@@ -343,8 +344,6 @@ cd .. && pnpm db:migrate && pnpm dev:api`}
   if (!manifest) {
     return <div style={{ padding: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>Loading Forge Admin…</div>;
   }
-
-const handleNodesChange = useCallback(() => setDirty(true), [setDirty]);
 
   return (
     <>
