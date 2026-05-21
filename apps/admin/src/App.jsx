@@ -62,8 +62,8 @@ function EditorCanvas({ page, canvasKey }) {
 
 function Toolbar({
   manifest, setManifest, revision, setRevision,
-  pageIndex, setPageIndex,   dirty, setDirty,
-  syncFromCanvas, toast,
+  pageIndex, setPageIndex, dirty, setDirty,
+  syncFromCanvas, toast, onSaved,
 }) {
   const fileRef = useRef(null);
   const [pageModal, setPageModal] = useState(false);
@@ -77,6 +77,7 @@ function Toolbar({
       const res = await saveDraft(m, revision);
       setManifest(m);
       setRevision(res.revision);
+      onSaved?.();
       setDirty(false);
       if (!silent) toast.show('Draft saved', 'ok');
       return true;
@@ -251,30 +252,36 @@ function AdminEditor({
     return syncManifestPage(manifest, pageIndex, query.serialize());
   }, [query, manifest, pageIndex]);
 
+  const lastSaved = useRef('');
+
   useEffect(() => {
-    if (!dirty) return;
-    const t = setTimeout(async () => {
+    const t = setInterval(async () => {
+      const serialized = query.serialize();
+      if (serialized === lastSaved.current) return;
       try {
-        const m = syncFromCanvas();
+        const m = syncManifestPage(manifest, pageIndex, serialized);
         const res = await saveDraft(m, revision);
         setManifest(m);
         setRevision(res.revision);
+        lastSaved.current = serialized;
         setDirty(false);
         toast.show('Autosaved', 'info');
-      } catch { /* silent — user can manual save */ }
+      } catch { /* silent */ }
     }, AUTOSAVE_MS);
-    return () => clearTimeout(t);
-  }, [dirty, syncFromCanvas, revision, setManifest, setRevision, setDirty, toast]);
+    return () => clearInterval(t);
+  }, [syncFromCanvas, revision, setManifest, setRevision, setDirty, toast, query, manifest, pageIndex]);
 
   useEffect(() => {
     const onKey = (e) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 's') {
         e.preventDefault();
         (async () => {
-          const m = syncFromCanvas();
+          const serialized = query.serialize();
+          const m = syncManifestPage(manifest, pageIndex, serialized);
           const res = await saveDraft(m, revision);
           setManifest(m);
           setRevision(res.revision);
+          lastSaved.current = serialized;
           setDirty(false);
           toast.show('Saved', 'ok');
         })();
@@ -282,7 +289,7 @@ function AdminEditor({
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [syncFromCanvas, revision, setManifest, setRevision, setDirty, toast]);
+  }, [query, manifest, pageIndex, revision, setManifest, setRevision, setDirty, toast]);
 
   return (
     <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -297,6 +304,7 @@ function AdminEditor({
         setDirty={setDirty}
         syncFromCanvas={syncFromCanvas}
         toast={toast}
+        onSaved={() => { lastSaved.current = query.serialize(); }}
       />
       <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
         <Palette />
@@ -320,11 +328,6 @@ export default function App() {
   const [dirty, setDirty] = useState(false);
   const [error, setError] = useState(null);
   const toast = useToast();
-  const dirtyTimer = useRef(null);
-  const handleNodesChange = useCallback(() => {
-    if (dirtyTimer.current) clearTimeout(dirtyTimer.current);
-    dirtyTimer.current = setTimeout(() => setDirty(true), 500);
-  }, [setDirty]);
 
   useEffect(() => {
     loadDraft()
@@ -351,7 +354,7 @@ cd .. && pnpm db:migrate && pnpm dev:api`}
 
   return (
     <>
-      <Editor resolver={resolver} enabled onNodesChange={handleNodesChange}>
+      <Editor resolver={resolver} enabled>
         <AdminEditor
           manifest={manifest}
           setManifest={setManifest}
